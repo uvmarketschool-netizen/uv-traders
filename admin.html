@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>UV Traders - Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<h2>UV Traders – Admin Panel</h2>
+
+<input id="stock" placeholder="Stock Name"><br><br>
+<input id="buy" placeholder="Buy Range"><br><br>
+<input id="sl" placeholder="Stop Loss"><br><br>
+<input id="target" placeholder="Target"><br><br>
+
+<button onclick="addRec()">Add Recommendation</button>
+
+<p id="msg"></p>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore, addDoc, collection, serverTimestamp } 
+    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDp81qEmGP9du2i-ZTEUppYPDZ97juFFrU",
+    authDomain: "uv-traders.firebaseapp.com",
+    projectId: "uv-traders",
+    storageBucket: "uv-traders.appspot.com",
+    messagingSenderId: "771893007700",
+    appId: "1:771893007700:web:1aae9ccea416989c44e4c1"
+  };
+
+  const ADMIN_EMAIL = "uvmarketschool@gmail.com";
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user || user.email !== ADMIN_EMAIL) {
+      alert("Access denied");
+      window.location.href = "index.html";
+    }
+  });
+
+  window.addRec = async () => {
+    await addDoc(collection(db, "recommendations"), {
+      stock: stock.value,
+      buy: buy.value,
+      sl: sl.value,
+      target: target.value,
+      status: "Running",
+      profit: "",
+      createdAt: serverTimestamp()
+    });
+
+    document.getElementById("msg").innerText = "Recommendation added";
+    stock.value = buy.value = sl.value = target.value = "";
+  };
+</script>
+
+</body>
+</html>
