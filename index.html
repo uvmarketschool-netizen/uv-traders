@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>UV Traders - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+  <h2>UV Traders</h2>
+
+  <input type="email" id="email" placeholder="Enter your email" />
+  <br><br>
+  <button onclick="sendLink()">Send Login Link</button>
+
+  <p id="msg"></p>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+      getAuth,
+      sendSignInLinkToEmail,
+      isSignInWithEmailLink,
+      signInWithEmailLink
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDp81qEmGP9du2i-ZTEUppYPDZ97juFFrU",
+      authDomain: "uv-traders.firebaseapp.com",
+      projectId: "uv-traders",
+      storageBucket: "uv-traders.appspot.com",
+      messagingSenderId: "771893007700",
+      appId: "1:771893007700:web:1aae9ccea416989c44e4c1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const actionCodeSettings = {
+      url: "https://uv-traders.web.app/dashboard.html",
+      handleCodeInApp: true
+    };
+
+    window.sendLink = async () => {
+      const email = document.getElementById("email").value;
+      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      localStorage.setItem("emailForSignIn", email);
+      document.getElementById("msg").innerText =
+        "Login link sent to your email";
+    };
+
+    if (isSignInWithEmailLink(auth, window.location.href)) {
+      const
